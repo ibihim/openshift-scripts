@@ -1,2 +1,8 @@
 # openshift-scripts
-Scripts to automatize my work
+
+Scripts to automatize my work.
+
+## Disclaimer
+
+> Open by default
+
