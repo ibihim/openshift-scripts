@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+
+################################################################################
+#
+# Patch Cluster Version Operator to not manage the cluster authentication operator
+#
+################################################################################
+
+kubectl patch clusterversion version --type='merge' -p "$(cat <<- EOF
+spec:
+  overrides:
+  - group: apps
+    kind: Deployment
+    namespace: openshift-authentication-operator
+    name: authentication-operator
+    unmanaged: true
+EOF
+)"

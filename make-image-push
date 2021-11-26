@@ -1,0 +1,48 @@
+#!/usr/bin/env bash
+
+################################################################################
+#
+# Makes an image and pushes it into a known repository.
+# Assumptions:
+# - You are logged in
+#
+################################################################################
+
+CONTAINER_RUNTIME=${CONTAINER_RUNTIME:-docker}
+REPOSITORY_OWNER=${REPOSITORY_OWNER:-kostrows}
+
+CREATED_IMAGE=`make images | \
+    grep 'Committing changes to' | \
+    sed -e 's/--> Committing changes to //' -e 's/ ...//'`
+
+if [ -z $CREATED_IMAGE ]; then
+    printf 'Could not find any creates images.\n'
+    printf 'Does the `make images` target exist?\n'
+    printf 'Does the imagename get exposed through "Comitting changes to" message?\n'
+    exit 1
+fi
+
+# Sometimes the image name is in the tag, sometimes it is the name. Therefore we
+# try with both parts. Sometimes we add prefixes like "origin-", which we clean ideally.
+for KEYWORD in `printf "$CREATED_IMAGE" | sed -e 's/:/ /' -e 's/origin-//'`
+do
+    RESULT=`$CONTAINER_RUNTIME images --format "{{.Repository}} {{.Tag}}" | grep -E "$REPOSITORY_OWNER.*$KEYWORD"`
+    if [ $? -eq 0 ]; then
+        IMAGE_NAME=`printf "$RESULT" | head -n1 | awk '{print $1}'`
+        break
+    fi
+done
+
+if [ -z $IMAGE_NAME ]; then
+    printf 'Could not make any assumptions about potential image name:\n'
+    printf 'Is your username %s?\n' "$REPOSITORY_OWNER"
+    printf 'Does your repository match the tag or repository of %s (ignore any "origin-")?\n' $CREATED_IMAGE
+    exit 1
+fi
+
+NEW_TAG=`date +"%s"`
+NEW_IMAGE=$IMAGE_NAME:$NEW_TAG
+
+$CONTAINER_RUNTIME tag $CREATED_IMAGE $NEW_IMAGE
+$CONTAINER_RUNTIME push $NEW_IMAGE
+

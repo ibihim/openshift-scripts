@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+
+###############################################################################
+#
+# Destroys the last OpenShift cluster and creates a new cluster.
+#
+# Expectations:
+# - exec dir has openshift-install
+# - exec dir has install-config.yaml that contains preferred config
+# - previous dir is named like so: YYYY-MM-DD
+#
+###############################################################################
+
+DATE_REGEX="[0-9]\{4\}-[0-9]\{2\}-[0-9]\{2\}"
+LATEST_DIR=`ls -d */ | \
+    grep -o $DATE_REGEX | \
+    sort -r | \
+    head -n1`
+
+if [ -e $LATEST_DIR ]; then
+    ./openshift-install --dir=$LATEST_DIR destroy cluster
+fi
+
+TODAY=`date +%Y-%m-%d`
+mkdir -p $TODAY && \
+    cp install-config.yaml $TODAY && \
+    ./openshift-install --dir=$TODAY create cluster
