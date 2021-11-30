@@ -11,6 +11,10 @@
 CONTAINER_RUNTIME=${CONTAINER_RUNTIME:-docker}
 REPOSITORY_OWNER=${REPOSITORY_OWNER:-kostrows}
 
+printf 'Container Runtime: %s\n' $CONTAINER_RUNTIME
+printf 'Repository Owner: %s\n' $REPOSITORY_OWNER
+printf 'Creating image..\n'
+
 CREATED_IMAGE=`make images | \
     grep 'Committing changes to' | \
     sed -e 's/--> Committing changes to //' -e 's/ ...//'`
@@ -21,6 +25,8 @@ if [ -z $CREATED_IMAGE ]; then
     printf 'Does the imagename get exposed through "Comitting changes to" message?\n'
     exit 1
 fi
+
+printf 'Created image: %s\n' $CREATED_IMAGE
 
 # Sometimes the image name is in the tag, sometimes it is the name. Therefore we
 # try with both parts. Sometimes we add prefixes like "origin-", which we clean ideally.
@@ -42,6 +48,8 @@ fi
 
 NEW_TAG=`date +"%s"`
 NEW_IMAGE=$IMAGE_NAME:$NEW_TAG
+
+printf 'pushing as %s\n' $NEW_IMAGE
 
 $CONTAINER_RUNTIME tag $CREATED_IMAGE $NEW_IMAGE
 $CONTAINER_RUNTIME push $NEW_IMAGE

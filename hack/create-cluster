@@ -18,10 +18,12 @@ LATEST_DIR=`ls -d */ | \
     head -n1`
 
 if [ -e $LATEST_DIR ]; then
+    printf 'Deleting cluster with dir %s\n' $LATEST_DIR
     ./openshift-install --dir=$LATEST_DIR destroy cluster
 fi
 
 TODAY=`date +%Y-%m-%d`
 mkdir -p $TODAY && \
+    printf 'Copying config from CWD into %s and creating cluster...\n' $TODAY
     cp install-config.yaml $TODAY && \
     ./openshift-install --dir=$TODAY create cluster

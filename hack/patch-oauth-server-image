@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+################################################################################
+#
+# Patches CAO deployment with OAuthServer image.
+#
+################################################################################
+NEW_OAUTH_IMAGE=$1
+if [ -z $NEW_OAUTH_IMAGE ]; then
+    printf 'OAuthImage needs to be set as pararm no1\n'
+    exit 1
+fi
+
+kubectl get deployment -n {openshift-,}authentication-operator -o json \
+    | jq ".spec.template.spec.containers[0].env[0].value = \"$NEW_OAUTH_IMAGE\"" \
+    | kubectl replace -f -
