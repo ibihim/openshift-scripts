@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+################################################################################
+#
+# Upscaling cluster authentication operator, will lead to a chain reaction that
+# scales the oauth servers up.
+#
+################################################################################
+
+kubectl scale deployment -n {openshift-,}authentication-operator --replicas=1

@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+################################################################################
+#
+# Uses the secret.yaml in htpas-data dir and patches the oauth CR to use htpass
+# as IdP.
+#
+################################################################################
+
+kubectl apply -f htpass-data/secret.yaml
+kubectl get oauths cluster -o json \
+    | jq '.spec.identityProviders=[{"name":"my_htpasswd_provider", "mappingMethod": "claim", "type": "HTPasswd", "htpasswd": { "fileData": { "name": "htpass-secret"}}}]' \
+    | kubectl replace -f -

@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+################################################################################
+#
+# It is necessary to scale the cluster authentication operator down first, so it
+# doesn't interfere with our effort to have a single oauth instance.
+#
+################################################################################
+
+kubectl scale deployment -n {openshift-,}authentication-operator --replicas=0 \
+    && kubectl scale deployment -n openshift-authentication oauth-openshift --replicas=1

@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+################################################################################
+#
+# Copies the audit.log from the first oauth-server found. Ideally there is only
+# one replica, or the script gets extended for multi replicas.
+#
+################################################################################
+
+kubectl get pods -n openshift-authentication \
+    | tail -n1 \
+    | awk '{ print $1 }' \
+    | xargs -i kubectl cp -n openshift-authentication \
+        {}:var/log/oauth-server/audit.log \
+        $PWD/$(date +%Y-%m-%d)-audit.log \
