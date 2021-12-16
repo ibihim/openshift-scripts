@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+COUNT=$(kubectl get pods -A | wc -l)
+
+if [ $COUNT -gt 200 ]; then
+    printf 'connected to os cluster! 🥳 \n'
+    exit 0
+fi
+
+printf 'not connected? count is at: %s 😥\n' $COUNT

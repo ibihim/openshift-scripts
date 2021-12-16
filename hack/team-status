@@ -1,0 +1,48 @@
+#!/usr/bin/env bash
+
+###############################################################################
+#
+# Prints open PRs from Team Members in OpenShift
+#
+###############################################################################
+
+TEAM="s-urbaniak stlaz slaskawi emilym1 ibihim"
+OPENSHIFT_REPOS=$(gh repo list openshift \
+    --json nameWithOwner --jq '.[].nameWithOwner' \
+    --limit 1000 | sort\
+)
+# OPENSHIFT_REPOS="openshift/cert-manager-operator openshift/cluster-authentication-operator"
+
+BREAK="################################################################################"
+
+PRs=
+IS_REPO_PRINTED=false
+IS_USER_PRINTED=false
+for REPO in $OPENSHIFT_REPOS
+do
+    for USER in $TEAM
+    do
+        LIST=$(gh pr list  --repo $REPO --limit 1000 --author $USER --json 'title,url' --jq '.[] | "\(.title) (\(.url))"')
+
+        if [[ -n $LIST ]]
+        then
+
+            if [[ $IS_REPO_PRINTED = "false" ]]; then
+                printf '\n%s\n#\n# %s\n#\n%s\n\n' $BREAK $REPO $BREAK
+                IS_REPO_PRINTED="true"
+            fi
+
+            if [[ $IS_USER_PRINTED = "false" ]]; then
+                printf '%s:\n' "$USER"
+                IS_USER_PRINTED="true"
+            fi
+
+            printf "$LIST\n"
+        fi
+
+        printf '\n'
+        IS_USER_PRINTED="false"
+    done
+
+    IS_REPO_PRINTED="false"
+done
