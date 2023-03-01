@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+
+URL="${URL:-$1}"
+
+if [ -z "$URL" ]
+then
+    echo 'URL required'
+    exit 1
+fi
+
+HOST=
+[[ $URL =~ ^([^:]+://[^/]+)/?(.*)$ ]] && HOST="${BASH_REMATCH[1]}"
+
+LOG_LIST="$(/usr/bin/curl --silent $URL \
+    | rg -e 'oauth-apiserver' -e 'authentication_oauth' -e 'authentication-operator' \
+    | sed 's/<div class="pure-u-2-5"><a href="//' \
+    | sed 's/\.log.*$/\.log/')"
+
+if [ -z "$LOG_LIST" ]
+then
+    echo 'no logs found'
+fi
+
+LOG_DIR=logs-$(date +"%Y-%m-%d-%H-%M")
+mkdir -p "$LOG_DIR"
+
+for PATH in $LOG_LIST
+do
+    RESULT=$(/usr/bin/curl --silent "$HOST$PATH")
+
+    if [ -n "$RESULT" ]
+    then
+        NAME="${PATH##/*/}"
+        echo "store log to $LOG_DIR/$NAME"
+        echo "$RESULT" > "$LOG_DIR/$NAME"
+    fi
+done

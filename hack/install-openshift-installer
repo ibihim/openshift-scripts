@@ -1,0 +1,19 @@
+OPENSHIFT_ARCHIVE=openshift-install-linux.tar.gz
+OPENSHIFT_BINARY=$(echo "$OPENSHIFT_ARCHIVE" | sed 's/-linux.tar.gz//')
+INSTALLATION_DIR=bin
+
+# Download stable openshift archive
+wget https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/stable/"$OPENSHIFT_ARCHIVE"
+
+# Install
+mv "$OPENSHIFT_ARCHIVE" "$INSTALLATION_DIR"
+cd bin
+
+tar xvfz "$OPENSHIFT_ARCHIVE"
+rm "$OPENSHIFT_ARCHIVE"
+
+echo "$OPENSHIFT_BINARY"
+chmod +x "$OPENSHIFT_BINARY"
+
+OPENSHIFT_BINARY_VERSION=$(./"$OPENSHIFT_BINARY" version | head -n1 | sed -e 's/ /_/' -e 's/.\///')
+mv "$OPENSHIFT_BINARY" "$OPENSHIFT_BINARY_VERSION"

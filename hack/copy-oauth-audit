@@ -7,9 +7,14 @@
 #
 ################################################################################
 
+FILENAME=$PWD/$(date +%Y-%m-%d)-oauth-server-audit
+FILE=$FILENAME.json
+FILE_MINIFIED=$FILENAME.min.json
+
 kubectl get pods -n openshift-authentication \
     | tail -n1 \
     | awk '{ print $1 }' \
     | xargs -i kubectl cp -n openshift-authentication \
         {}:var/log/oauth-server/audit.log \
-        $PWD/$(date +%Y-%m-%d)-audit.log \
+        $FILE_MINIFIED \
+    && jq < $FILE_MINIFIED > $FILE

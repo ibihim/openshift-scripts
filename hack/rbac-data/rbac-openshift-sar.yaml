@@ -1,0 +1,14 @@
+apiVersion: authorization.k8s.io/v1
+kind: SubjectAccessReview
+metadata:
+  name: kostrows-rbac-openshift
+spec:
+  user: kostrows
+  resourceAttributes:
+    namespace: rbac-openshift-test
+    verb: get
+    group: ""
+    version: v1
+    resource: Secret
+    name: kostrows-secrets
+

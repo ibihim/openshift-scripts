@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+kubectl get routes -A | rg 'console-openshift-console' | awk '{ print $3 }' | wl-copy

@@ -1,0 +1,22 @@
+apiVersion: config.openshift.io/v1
+kind: OAuth
+metadata:
+  name: cluster
+spec:
+  identityProviders:
+  - mappingMethod: claim
+    name: openid
+    openID:
+      claims:
+        email:
+        - email
+        name:
+        - name
+        preferredUsername:
+        - preferred_username
+      clientID: {{ clientID }}
+      clientSecret:
+        name: openid-secret
+      extraScopes: []
+      issuer: https://gitlab.com
+    type: OpenID

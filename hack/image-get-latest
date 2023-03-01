@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+docker images --filter=reference='kostrows/*:*' --format "docker.io/{{.Repository}}:{{.Tag}}" | rg cluster-authentication-operator | head -n1

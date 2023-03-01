@@ -1,0 +1,35 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: rbac-openshift-test
+---
+apiVersion: v1
+data:
+  firstname: a3J6eXN6dG9m
+kind: Secret
+metadata:
+  name: kostrows-secrets
+  namespace: rbac-openshift-test
+---
+apiVersion: authorization.openshift.io/v1
+kind: ClusterRole
+metadata:
+  name: secret-reader
+rules:
+- apiGroups: [""]
+  resources: ["secrets"]
+  verbs: ["get", "watch", "list"]
+---
+apiVersion: authorization.openshift.io/v1
+kind: RoleBinding
+metadata:
+  name: read-secrets
+  namespace: rbac-openshift-test
+subjects:
+- kind: User
+  name: kostrows
+  apiGroup: authorization.openshift.io
+roleRef:
+  kind: ClusterRole
+  name: secret-reader
+  apiGroup: authorization.openshift.io

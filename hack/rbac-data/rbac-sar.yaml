@@ -1,0 +1,11 @@
+apiVersion: authorization.k8s.io/v1
+kind: SubjectAccessReview
+spec:
+  user: kostrows
+  resourceAttributes:
+    namespace: rbac-test
+    verb: get
+    group: ""
+    version: v1
+    resource: Secret
+    name: kostrows-secrets

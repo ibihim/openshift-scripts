@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+kubectl scale deployment cluster-version-operator -n openshift-cluster-version --replicas=0
+

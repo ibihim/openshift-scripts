@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+
+################################################################################
+#
+# Patch Cluster Version Operator to not manage the OAuth CRD
+#
+################################################################################
+
+kubectl patch clusterversion version --type='merge' -p "$(cat <<- EOF
+spec:
+  overrides:
+    - group: apiextensions.k8s.io⇐
+      kind: CustomResourceDefinition
+      name: oauths.config.openshift.io
+      unmanaged: true
+      namespace: ""
+EOF
+)"

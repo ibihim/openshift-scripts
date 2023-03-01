@@ -8,4 +8,5 @@
 ################################################################################
 
 kubectl scale deployment -n {openshift-,}authentication-operator --replicas=0 \
-    && kubectl scale deployment -n openshift-authentication oauth-openshift --replicas=1
+    && kubectl scale deployment -n openshift-authentication oauth-openshift --replicas=1 \
+    && kubectl scale deployment -n openshift-oauth-apiserver apiserver --replicas=1

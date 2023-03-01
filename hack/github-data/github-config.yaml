@@ -1,0 +1,1 @@
+Authorization callback URL: https://oauth-openshift.apps.{{ clustername }}.{{ clusterdomain }}/oauth2callback/github

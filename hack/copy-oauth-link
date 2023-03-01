@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+kubectl get routes -A \
+    | rg 'oauth-openshift' \
+    | awk '{ print $3 }' \
+    | xargs -i printf 'https://%s/oauth2callback/' {} \
+    | wl-copy
+

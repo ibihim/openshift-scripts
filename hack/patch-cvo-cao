@@ -6,9 +6,6 @@
 #
 ################################################################################
 
-NAMESPACE=${NAMESPACE:-openshift-authentication-operator}
-NAME=${NAME:-authentication-operator}
-
 kubectl patch clusterversion version --type='merge' -p "$(cat <<- EOF
 spec:
   overrides:

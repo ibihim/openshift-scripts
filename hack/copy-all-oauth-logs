@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+################################################################################
+#
+# Stores the oauth-server logs.
+#
+################################################################################
+
+kubectl logs -n openshift-authentication -lapp=oauth-openshift > \
+    $PWD/$(date +%Y-%m-%d)-oauth-server.log
+
+
